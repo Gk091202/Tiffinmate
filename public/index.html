@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TiffinMate - Homely Meals, Daily Delivered</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🍱</span>
+          TiffinMate
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/">Home</a></li>
+          <li><a href="/search">Search Tiffin</a></li>
+          <li id="authLinks">
+            <a href="/login" class="btn btn-secondary btn-small">Login</a>
+          </li>
+          <li>
+            <a href="/register-vendor" class="btn btn-primary btn-small"
+              >List Your Service</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>🍱 Homely Meals, Daily Delivered</h1>
+        <p>
+          Connect with trusted local tiffin services near you. Fresh, healthy,
+          and affordable meals for students and professionals.
+        </p>
+        <div class="hero-buttons">
+          <a href="/search" class="btn btn-primary btn-large"
+            >Search Tiffin Services</a
+          >
+          <a href="/register-vendor" class="btn btn-secondary btn-large"
+            >List Your Service</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+      <div class="container">
+        <h2 class="text-center mb-4">Why Choose TiffinMate?</h2>
+        <div class="grid grid-3">
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">🏠</div>
+            <h3>Homely Food</h3>
+            <p class="card-text">
+              Get authentic home-cooked meals made with love and care, just like
+              mom makes.
+            </p>
+          </div>
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">💰</div>
+            <h3>Affordable Plans</h3>
+            <p class="card-text">
+              Choose from daily, weekly, or monthly plans that fit your budget
+              and schedule.
+            </p>
+          </div>
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">📍</div>
+            <h3>Local Vendors</h3>
+            <p class="card-text">
+              Support local businesses and get fresh meals delivered right to
+              your doorstep.
+            </p>
+          </div>
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">⭐</div>
+            <h3>Verified Reviews</h3>
+            <p class="card-text">
+              Read real reviews from students and professionals like you before
+              subscribing.
+            </p>
+          </div>
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">📅</div>
+            <h3>Easy Tracking</h3>
+            <p class="card-text">
+              Track your daily deliveries with our simple calendar-based
+              tracking system.
+            </p>
+          </div>
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">⏸️</div>
+            <h3>Flexible Plans</h3>
+            <p class="card-text">
+              Pause, resume, or cancel your subscription anytime without any
+              hassle.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section" style="background-color: var(--bg-light)">
+      <div class="container">
+        <h2 class="text-center mb-4">How It Works</h2>
+        <div class="grid grid-4">
+          <div class="text-center">
+            <div
+              style="
+                font-size: 3rem;
+                color: var(--primary-green);
+                margin-bottom: 1rem;
+              "
+            >
+              1️⃣
+            </div>
+            <h4>Search</h4>
+            <p>Enter your location and find tiffin services near you.</p>
+          </div>
+          <div class="text-center">
+            <div
+              style="
+                font-size: 3rem;
+                color: var(--primary-green);
+                margin-bottom: 1rem;
+              "
+            >
+              2️⃣
+            </div>
+            <h4>Compare</h4>
+            <p>
+              Check prices, reviews, and meal types to find the perfect match.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              style="
+                font-size: 3rem;
+                color: var(--primary-green);
+                margin-bottom: 1rem;
+              "
+            >
+              3️⃣
+            </div>
+            <h4>Subscribe</h4>
+            <p>Choose your plan and subscribe with just a few clicks.</p>
+          </div>
+          <div class="text-center">
+            <div
+              style="
+                font-size: 3rem;
+                color: var(--primary-green);
+                margin-bottom: 1rem;
+              "
+            >
+              4️⃣
+            </div>
+            <h4>Enjoy</h4>
+            <p>Get fresh, homely meals delivered daily to your doorstep.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section">
+      <div class="container">
+        <h2 class="text-center mb-4">Our Impact</h2>
+        <div class="stats-container">
+          <div class="stat-box">
+            <span class="stat-number">1000+</span>
+            <span class="stat-label">Happy Customers</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">150+</span>
+            <span class="stat-label">Tiffin Vendors</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">50K+</span>
+            <span class="stat-label">Meals Delivered</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">4.7⭐</span>
+            <span class="stat-label">Average Rating</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" style="background-color: var(--light-green)">
+      <div class="container text-center">
+        <h2>Ready to Get Started?</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem">
+          Join thousands of students and professionals enjoying homely meals
+          every day.
+        </p>
+        <div class="hero-buttons">
+          <a href="/search" class="btn btn-primary btn-large"
+            >Find Tiffin Near You</a
+          >
+          <a href="/register-vendor" class="btn btn-outline btn-large"
+            >Become a Vendor</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>🍱 TiffinMate</h3>
+            <p>
+              Connecting students and professionals with homely, affordable
+              tiffin services.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="/">Home</a></li>
+              <li><a href="/search">Search Tiffin</a></li>
+              <li><a href="/tracking">Track Delivery</a></li>
+              <li><a href="/register-vendor">List Your Service</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>For Vendors</h3>
+            <ul class="footer-links">
+              <li><a href="/register-vendor">Register Your Service</a></li>
+              <li><a href="#">Vendor Guidelines</a></li>
+              <li><a href="#">Pricing Plans</a></li>
+              <li><a href="#">Success Stories</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Support</h3>
+            <ul class="footer-links">
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025 TiffinMate. All rights reserved. Made with ❤️ for homely
+            food lovers.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function toggleMenu() {
+        const navLinks = document.getElementById("navLinks");
+        navLinks.classList.toggle("active");
+      }
+
+      // Close menu when clicking outside
+      document.addEventListener("click", function (event) {
+        const navLinks = document.getElementById("navLinks");
+        const menuBtn = document.querySelector(".mobile-menu-btn");
+
+        if (!event.target.closest(".nav-container")) {
+          navLinks.classList.remove("active");
+        }
+      });
+
+      // Update navigation based on session
+      function updateNavigation() {
+        const session = JSON.parse(
+          localStorage.getItem("userSession") || "null"
+        );
+        const authLinks = document.getElementById("authLinks");
+
+        if (session) {
+          if (session.type === "user") {
+            authLinks.innerHTML = `
+              <a href="/dashboard">Dashboard</a>
+              <a href="/tracking">Track</a>
+              <a href="#" onclick="logout()" class="btn btn-secondary btn-small">Logout</a>
+            `;
+          } else if (session.type === "vendor") {
+            authLinks.innerHTML = `
+              <a href="/vendor-dashboard">Dashboard</a>
+              <a href="#" onclick="logout()" class="btn btn-secondary btn-small">Logout</a>
+            `;
+          }
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem("userSession");
+        window.location.reload();
+      }
+
+      // Run on page load
+      updateNavigation();
+    </script>
+  </body>
+</html>

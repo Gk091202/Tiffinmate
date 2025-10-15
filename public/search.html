@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Tiffin Services - TiffinMate</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🍱</span>
+          TiffinMate
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/">Home</a></li>
+          <li><a href="/search">Search Tiffin</a></li>
+          <li id="authLinks">
+            <a href="/login" class="btn btn-secondary btn-small">Login</a>
+          </li>
+          <li>
+            <a href="/register-vendor" class="btn btn-primary btn-small"
+              >List Your Service</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Search Hero -->
+    <section
+      style="
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--dark-green)
+        );
+        color: white;
+        padding: 3rem 0;
+        text-align: center;
+      "
+    >
+      <div class="container">
+        <h1>Find Your Perfect Tiffin Service</h1>
+        <p>Search from hundreds of local vendors near you</p>
+      </div>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="section">
+      <div class="container">
+        <div class="filter-section">
+          <div class="filter-row">
+            <div class="filter-group">
+              <label class="form-label">📍 Location</label>
+              <input
+                type="text"
+                id="searchCity"
+                class="form-input"
+                placeholder="Enter city (e.g., Pune, Bangalore)"
+              />
+            </div>
+            <div class="filter-group">
+              <label class="form-label">🍽️ Food Type</label>
+              <select id="foodType" class="form-select">
+                <option value="">All Types</option>
+                <option value="Veg">Vegetarian</option>
+                <option value="Non-Veg">Non-Vegetarian</option>
+                <option value="Jain">Jain</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="form-label">💰 Max Price (Monthly)</label>
+              <input
+                type="number"
+                id="maxPrice"
+                class="form-input"
+                placeholder="₹5000"
+                min="1000"
+                max="10000"
+                step="100"
+              />
+            </div>
+            <div class="filter-group">
+              <label class="form-label">📦 Sort By</label>
+              <select id="sortBy" class="form-select">
+                <option value="">Best Match</option>
+                <option value="rating">Highest Rated</option>
+                <option value="price_low">Price: Low to High</option>
+                <option value="price_high">Price: High to Low</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <button
+                class="btn btn-primary btn-block"
+                onclick="searchVendors()"
+                style="margin-top: 1.8rem"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Count -->
+        <div id="resultsCount" class="mb-3" style="display: none">
+          <h3>Found <span id="vendorCount">0</span> tiffin services</h3>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="spinner" style="display: none"></div>
+
+        <!-- Vendor Results -->
+        <div id="vendorResults" class="grid grid-2"></div>
+
+        <!-- No Results Message -->
+        <div
+          id="noResults"
+          class="text-center"
+          style="display: none; padding: 3rem"
+        >
+          <div style="font-size: 4rem; margin-bottom: 1rem">😔</div>
+          <h3>No tiffin services found</h3>
+          <p>Try adjusting your filters or search in a different location</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>🍱 TiffinMate</h3>
+            <p>
+              Connecting students and professionals with homely, affordable
+              tiffin services.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="/">Home</a></li>
+              <li><a href="/search">Search Tiffin</a></li>
+              <li><a href="/tracking">Track Delivery</a></li>
+              <li><a href="/register-vendor">List Your Service</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>For Vendors</h3>
+            <ul class="footer-links">
+              <li><a href="/register-vendor">Register Your Service</a></li>
+              <li><a href="#">Vendor Guidelines</a></li>
+              <li><a href="#">Pricing Plans</a></li>
+              <li><a href="#">Success Stories</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Support</h3>
+            <ul class="footer-links">
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025 TiffinMate. All rights reserved. Made with ❤️ for homely
+            food lovers.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function toggleMenu() {
+        const navLinks = document.getElementById("navLinks");
+        navLinks.classList.toggle("active");
+      }
+
+      // Load vendors on page load
+      window.addEventListener("DOMContentLoaded", () => {
+        searchVendors();
+      });
+
+      async function searchVendors() {
+        const city = document.getElementById("searchCity").value.trim();
+        const foodType = document.getElementById("foodType").value;
+        const maxPrice = document.getElementById("maxPrice").value;
+        const sortBy = document.getElementById("sortBy").value;
+
+        // Show loading
+        document.getElementById("loadingSpinner").style.display = "block";
+        document.getElementById("vendorResults").innerHTML = "";
+        document.getElementById("resultsCount").style.display = "none";
+        document.getElementById("noResults").style.display = "none";
+
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (city) params.append("city", city);
+        if (foodType) params.append("food_type", foodType);
+        if (maxPrice) params.append("max_price", maxPrice);
+        if (sortBy) params.append("sort_by", sortBy);
+
+        try {
+          const response = await fetch(`/api/vendors?${params.toString()}`);
+          const vendors = await response.json();
+
+          // Hide loading
+          document.getElementById("loadingSpinner").style.display = "none";
+
+          if (vendors.length === 0) {
+            document.getElementById("noResults").style.display = "block";
+          } else {
+            document.getElementById("resultsCount").style.display = "block";
+            document.getElementById("vendorCount").textContent = vendors.length;
+            displayVendors(vendors);
+          }
+        } catch (error) {
+          console.error("Error fetching vendors:", error);
+          document.getElementById("loadingSpinner").style.display = "none";
+          document.getElementById("noResults").style.display = "block";
+        }
+      }
+
+      function displayVendors(vendors) {
+        const container = document.getElementById("vendorResults");
+        container.innerHTML = "";
+
+        vendors.forEach((vendor) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.style.cursor = "pointer";
+          card.onclick = () =>
+            (window.location.href = `/vendor?id=${vendor.id}`);
+
+          card.innerHTML = `
+                    <img src="${
+                      vendor.image_url ||
+                      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400"
+                    }" 
+                         alt="${vendor.name}" class="card-img">
+                    <div class="flex-between mb-2">
+                        <h3 class="card-title" style="margin-bottom: 0;">${
+                          vendor.name
+                        }</h3>
+                        <span class="badge badge-success">${
+                          vendor.food_type
+                        }</span>
+                    </div>
+                    <div class="rating mb-2">
+                        ${getStarRating(vendor.rating)}
+                        <span class="rating-text">${vendor.rating.toFixed(
+                          1
+                        )} (${vendor.total_ratings} reviews)</span>
+                    </div>
+                    <p class="card-text">${vendor.description.substring(
+                      0,
+                      100
+                    )}...</p>
+                    <div class="flex-between mb-2">
+                        <div>
+                            <small style="color: var(--text-light);">Monthly</small>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-green);">₹${
+                              vendor.monthly_price
+                            }</div>
+                        </div>
+                        <div>
+                            <small style="color: var(--text-light);">Weekly</small>
+                            <div style="font-size: 1.2rem; font-weight: 600;">₹${
+                              vendor.weekly_price
+                            }</div>
+                        </div>
+                        <div>
+                            <small style="color: var(--text-light);">Daily</small>
+                            <div style="font-size: 1.2rem; font-weight: 600;">₹${
+                              vendor.daily_price
+                            }</div>
+                        </div>
+                    </div>
+                    <div class="flex-between" style="padding-top: 1rem; border-top: 1px solid #e0e0e0;">
+                        <span style="color: var(--text-light); font-size: 0.9rem;">📍 ${
+                          vendor.locality
+                        }, ${vendor.city}</span>
+                        <span style="color: var(--text-light); font-size: 0.9rem;">🚚 ${
+                          vendor.delivery_radius
+                        }km</span>
+                    </div>
+                    <div class="mt-2">
+                        <span style="color: var(--primary-green); font-weight: 600;">😊 ${
+                          vendor.happy_customers
+                        } happy customers</span>
+                    </div>
+                    <button class="btn btn-primary btn-block mt-3" onclick="event.stopPropagation(); window.location.href='/vendor?id=${
+                      vendor.id
+                    }'">
+                        View Details & Subscribe
+                    </button>
+                `;
+
+          container.appendChild(card);
+        });
+      }
+
+      function getStarRating(rating) {
+        const fullStars = Math.floor(rating);
+        const halfStar = rating % 1 >= 0.5;
+        let stars = "";
+
+        for (let i = 0; i < fullStars; i++) {
+          stars += "⭐";
+        }
+        if (halfStar) {
+          stars += "⭐";
+        }
+
+        return stars;
+      }
+
+      // Update navigation based on session
+      function updateNavigation() {
+        const session = JSON.parse(
+          localStorage.getItem("userSession") || "null"
+        );
+        const authLinks = document.getElementById("authLinks");
+
+        if (session) {
+          if (session.type === "user") {
+            authLinks.innerHTML = `
+              <a href="/dashboard">Dashboard</a>
+              <a href="/tracking">Track</a>
+              <a href="#" onclick="logout()" class="btn btn-secondary btn-small">Logout</a>
+            `;
+          } else if (session.type === "vendor") {
+            authLinks.innerHTML = `
+              <a href="/vendor-dashboard">Dashboard</a>
+              <a href="#" onclick="logout()" class="btn btn-secondary btn-small">Logout</a>
+            `;
+          }
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem("userSession");
+        window.location.reload();
+      }
+
+      // Run on page load
+      updateNavigation();
+    </script>
+  </body>
+</html>

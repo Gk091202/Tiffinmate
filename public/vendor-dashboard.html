@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vendor Dashboard - TiffinMate</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .vendor-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--dark-green)
+        );
+        color: white;
+        padding: 2rem 0;
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .metric-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+      }
+
+      .metric-label {
+        color: var(--text-light);
+        margin-top: 0.5rem;
+      }
+
+      .table-container {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--bg-light);
+      }
+
+      th {
+        background-color: var(--light-green);
+        color: var(--text-dark);
+        font-weight: 600;
+      }
+
+      tr:hover {
+        background-color: var(--bg-light);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🍱</span>
+          TiffinMate
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/vendor-dashboard">Dashboard</a></li>
+          <li>
+            <a href="#" onclick="logout()" class="btn btn-secondary btn-small"
+              >Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Vendor Header -->
+    <section class="vendor-header">
+      <div class="container">
+        <h1>Vendor Dashboard</h1>
+        <p id="vendorName">Loading...</p>
+      </div>
+    </section>
+
+    <!-- Metrics -->
+    <section class="section">
+      <div class="container">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value" id="totalSubscriptions">0</div>
+            <p class="metric-label">Total Subscriptions</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="activeSubscriptions">0</div>
+            <p class="metric-label">Active Subscriptions</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="totalRevenue">₹0</div>
+            <p class="metric-label">Total Revenue</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="avgRating">0.0</div>
+            <p class="metric-label">Average Rating</p>
+          </div>
+        </div>
+
+        <!-- Active Subscriptions Table -->
+        <h2 class="mb-3">Active Subscriptions</h2>
+        <div class="table-container">
+          <table id="subscriptionsTable">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Plan</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="subscriptionsBody">
+              <tr>
+                <td colspan="6" style="text-align: center">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Recent Reviews -->
+        <h2 class="mt-4 mb-3">Recent Reviews</h2>
+        <div id="reviewsContainer"></div>
+        <div
+          id="noReviews"
+          style="
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+          "
+        >
+          <p>No reviews yet</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2025 TiffinMate. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      let currentVendor = null;
+
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+
+      function logout() {
+        localStorage.removeItem("userSession");
+        window.location.href = "/login";
+      }
+
+      function checkAuth() {
+        const session = localStorage.getItem("userSession");
+        if (!session) {
+          window.location.href = "/login";
+          return null;
+        }
+
+        const userData = JSON.parse(session);
+        if (userData.type !== "vendor") {
+          window.location.href = "/login";
+          return null;
+        }
+
+        return userData;
+      }
+
+      async function loadDashboard() {
+        currentVendor = checkAuth();
+        if (!currentVendor) return;
+
+        try {
+          // Load vendor details
+          const vendorResponse = await fetch(
+            `/api/vendors/${currentVendor.userId}`
+          );
+          const vendor = await vendorResponse.json();
+
+          document.getElementById("vendorName").textContent = vendor.name;
+          document.getElementById("avgRating").textContent =
+            vendor.rating.toFixed(1) + "⭐";
+
+          // Load subscriptions
+          const subsResponse = await fetch(
+            `/api/subscriptions/vendor/${currentVendor.userId}`
+          );
+          const subscriptions = await subsResponse.json();
+
+          // Calculate metrics
+          const activeCount = subscriptions.filter(
+            (s) => s.status === "active"
+          ).length;
+          const totalRevenue = subscriptions.reduce(
+            (sum, s) => sum + s.total_amount,
+            0
+          );
+
+          document.getElementById("totalSubscriptions").textContent =
+            subscriptions.length;
+          document.getElementById("activeSubscriptions").textContent =
+            activeCount;
+          document.getElementById(
+            "totalRevenue"
+          ).textContent = `₹${totalRevenue.toLocaleString()}`;
+
+          // Display subscriptions
+          displaySubscriptions(subscriptions);
+
+          // Load reviews
+          const reviewsResponse = await fetch(
+            `/api/reviews/vendor/${currentVendor.userId}`
+          );
+          const reviews = await reviewsResponse.json();
+          displayReviews(reviews);
+        } catch (error) {
+          console.error("Error loading dashboard:", error);
+        }
+      }
+
+      function displaySubscriptions(subscriptions) {
+        const tbody = document.getElementById("subscriptionsBody");
+        tbody.innerHTML = "";
+
+        if (subscriptions.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="6" style="text-align: center;">No subscriptions yet</td></tr>';
+          return;
+        }
+
+        subscriptions.forEach((sub) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                    <td>${sub.user_name}</td>
+                    <td>${sub.plan_type}</td>
+                    <td>${new Date(sub.start_date).toLocaleDateString()}</td>
+                    <td>${new Date(sub.end_date).toLocaleDateString()}</td>
+                    <td>₹${sub.total_amount}</td>
+                    <td>${getStatusBadge(sub.status)}</td>
+                `;
+          tbody.appendChild(row);
+        });
+      }
+
+      function displayReviews(reviews) {
+        const container = document.getElementById("reviewsContainer");
+        container.innerHTML = "";
+
+        if (reviews.length === 0) {
+          document.getElementById("noReviews").style.display = "block";
+          return;
+        }
+
+        reviews.slice(0, 5).forEach((review) => {
+          const reviewCard = document.createElement("div");
+          reviewCard.className = "card mb-2";
+          reviewCard.innerHTML = `
+                    <div class="flex-between mb-2">
+                        <strong>${review.user_name}</strong>
+                        <div class="rating">${"⭐".repeat(review.rating)}</div>
+                    </div>
+                    <p>${review.comment}</p>
+                    <small style="color: var(--text-light);">${new Date(
+                      review.created_at
+                    ).toLocaleDateString()}</small>
+                `;
+          container.appendChild(reviewCard);
+        });
+      }
+
+      function getStatusBadge(status) {
+        const badges = {
+          active: '<span class="badge badge-success">Active</span>',
+          paused: '<span class="badge badge-warning">Paused</span>',
+          cancelled: '<span class="badge badge-danger">Cancelled</span>',
+          completed: '<span class="badge badge-info">Completed</span>',
+        };
+        return badges[status] || status;
+      }
+
+      window.addEventListener("DOMContentLoaded", loadDashboard);
+    </script>
+  </body>
+</html>

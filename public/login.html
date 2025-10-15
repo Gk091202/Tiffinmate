@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - TiffinMate</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+      }
+
+      .login-box {
+        max-width: 450px;
+        width: 100%;
+        background: white;
+        padding: 3rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-hover);
+      }
+
+      .login-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid var(--bg-light);
+      }
+
+      .tab {
+        flex: 1;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-light);
+        transition: all 0.3s;
+        border-bottom: 3px solid transparent;
+      }
+
+      .tab.active {
+        color: var(--primary-green);
+        border-bottom-color: var(--primary-green);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .login-header h2 {
+        color: var(--primary-green);
+        margin-bottom: 0.5rem;
+      }
+
+      .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+      }
+
+      .divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--bg-light);
+      }
+
+      .divider span {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        color: var(--text-light);
+      }
+
+      .error-message {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+      }
+
+      .success-message {
+        background-color: var(--light-green);
+        color: var(--primary-green);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🍱</span>
+          TiffinMate
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/">Home</a></li>
+          <li><a href="/search">Search Tiffin</a></li>
+          <li><a href="/login">Login</a></li>
+          <li>
+            <a href="/register-vendor" class="btn btn-primary btn-small"
+              >List Your Service</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Login Container -->
+    <section class="login-container">
+      <div class="login-box">
+        <!-- Tabs -->
+        <div class="login-tabs">
+          <button class="tab active" onclick="switchTab('user')">
+            🍱 User Login
+          </button>
+          <button class="tab" onclick="switchTab('vendor')">
+            🏪 Vendor Login
+          </button>
+        </div>
+
+        <!-- User Login -->
+        <div id="userTab" class="tab-content active">
+          <div class="login-header">
+            <h2>Welcome Back!</h2>
+            <p>Login to track your tiffin deliveries</p>
+          </div>
+
+          <div id="userError" class="error-message"></div>
+          <div id="userSuccess" class="success-message"></div>
+
+          <form onsubmit="handleUserLogin(event)">
+            <div class="form-group">
+              <label class="form-label">Email or Phone</label>
+              <input
+                type="text"
+                id="userEmailOrPhone"
+                class="form-input"
+                required
+                placeholder="Enter email or phone number"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input
+                type="text"
+                id="userName"
+                class="form-input"
+                required
+                placeholder="Enter your name"
+              />
+              <small style="color: var(--text-light)"
+                >For first-time login, we'll create your account</small
+              >
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-large">
+              Login / Sign Up
+            </button>
+          </form>
+
+          <div class="divider">
+            <span>OR</span>
+          </div>
+
+          <p class="text-center" style="color: var(--text-light)">
+            Don't have an account? Login will automatically create one for you!
+          </p>
+        </div>
+
+        <!-- Vendor Login -->
+        <div id="vendorTab" class="tab-content">
+          <div class="login-header">
+            <h2>Vendor Portal</h2>
+            <p>Manage your tiffin service</p>
+          </div>
+
+          <div id="vendorError" class="error-message"></div>
+          <div id="vendorSuccess" class="success-message"></div>
+
+          <form onsubmit="handleVendorLogin(event)">
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                id="vendorEmail"
+                class="form-input"
+                required
+                placeholder="your@email.com"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input
+                type="tel"
+                id="vendorPhone"
+                class="form-input"
+                required
+                placeholder="Your registered phone"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-large">
+              Login to Dashboard
+            </button>
+          </form>
+
+          <div class="divider">
+            <span>New Vendor?</span>
+          </div>
+
+          <a href="/register-vendor" class="btn btn-secondary btn-block"
+            >Register Your Tiffin Service</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>🍱 TiffinMate</h3>
+            <p>
+              Connecting students and professionals with homely, affordable
+              tiffin services.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="/">Home</a></li>
+              <li><a href="/search">Search Tiffin</a></li>
+              <li><a href="/login">Login</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 TiffinMate. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+
+      function switchTab(tabName) {
+        // Update tab buttons
+        document
+          .querySelectorAll(".tab")
+          .forEach((tab) => tab.classList.remove("active"));
+        event.target.classList.add("active");
+
+        // Update content
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((content) => content.classList.remove("active"));
+        document.getElementById(tabName + "Tab").classList.add("active");
+
+        // Clear messages
+        hideMessage("userError");
+        hideMessage("userSuccess");
+        hideMessage("vendorError");
+        hideMessage("vendorSuccess");
+      }
+
+      function showMessage(elementId, message) {
+        const element = document.getElementById(elementId);
+        element.textContent = message;
+        element.style.display = "block";
+      }
+
+      function hideMessage(elementId) {
+        document.getElementById(elementId).style.display = "none";
+      }
+
+      async function handleUserLogin(event) {
+        event.preventDefault();
+        hideMessage("userError");
+        hideMessage("userSuccess");
+
+        const emailOrPhone = document.getElementById("userEmailOrPhone").value;
+        const name = document.getElementById("userName").value;
+
+        try {
+          // Check if user exists by email or phone
+          const isEmail = emailOrPhone.includes("@");
+          const searchParam = isEmail
+            ? `email=${emailOrPhone}`
+            : `phone=${emailOrPhone}`;
+
+          // Try to find existing user
+          const usersResponse = await fetch(`/api/users/search?${searchParam}`);
+          let user = await usersResponse.json();
+
+          if (!user || user.error) {
+            // Create new user
+            const createResponse = await fetch("/api/users", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: name,
+                email: isEmail
+                  ? emailOrPhone
+                  : `${emailOrPhone}@tiffinmate.temp`,
+                phone: isEmail ? "0000000000" : emailOrPhone,
+                address: "",
+                city: "",
+              }),
+            });
+
+            const createResult = await createResponse.json();
+            user = { id: createResult.id, name: name };
+            showMessage(
+              "userSuccess",
+              "Account created successfully! Logging you in..."
+            );
+          } else {
+            showMessage("userSuccess", "Login successful!");
+          }
+
+          // Store user session
+          localStorage.setItem(
+            "userSession",
+            JSON.stringify({
+              userId: user.id,
+              name: user.name || name,
+              type: "user",
+              loginTime: new Date().toISOString(),
+            })
+          );
+
+          // Redirect to search page
+          setTimeout(() => {
+            window.location.href = "/search";
+          }, 1500);
+        } catch (error) {
+          console.error("Login error:", error);
+          showMessage("userError", "Login failed. Please try again.");
+        }
+      }
+
+      async function handleVendorLogin(event) {
+        event.preventDefault();
+        hideMessage("vendorError");
+        hideMessage("vendorSuccess");
+
+        const email = document.getElementById("vendorEmail").value;
+        const phone = document.getElementById("vendorPhone").value;
+
+        try {
+          // Find vendor by email and phone
+          const response = await fetch(
+            `/api/vendors/login?email=${email}&phone=${phone}`
+          );
+          const vendor = await response.json();
+
+          if (vendor.error) {
+            showMessage(
+              "vendorError",
+              "Invalid credentials. Please check your email and phone number."
+            );
+            return;
+          }
+
+          showMessage(
+            "vendorSuccess",
+            "Login successful! Redirecting to dashboard..."
+          );
+
+          // Store vendor session
+          localStorage.setItem(
+            "userSession",
+            JSON.stringify({
+              userId: vendor.id,
+              name: vendor.name,
+              type: "vendor",
+              email: vendor.email,
+              loginTime: new Date().toISOString(),
+            })
+          );
+
+          // Redirect to vendor dashboard
+          setTimeout(() => {
+            window.location.href = "/vendor-dashboard";
+          }, 1500);
+        } catch (error) {
+          console.error("Login error:", error);
+          showMessage("vendorError", "Login failed. Please try again.");
+        }
+      }
+
+      // Check if already logged in
+      window.addEventListener("DOMContentLoaded", () => {
+        const session = localStorage.getItem("userSession");
+        if (session) {
+          const userData = JSON.parse(session);
+          if (userData.type === "user") {
+            window.location.href = "/search";
+          } else if (userData.type === "vendor") {
+            window.location.href = "/vendor-dashboard";
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

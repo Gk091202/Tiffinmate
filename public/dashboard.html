@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Dashboard - TiffinMate</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .dashboard-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--dark-green)
+        );
+        color: white;
+        padding: 2rem 0;
+      }
+
+      .user-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .welcome-text h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        display: block;
+      }
+
+      .stat-label {
+        color: var(--text-light);
+        margin-top: 0.5rem;
+      }
+
+      .subscriptions-list {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .subscription-card {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .subscription-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: var(--border-radius);
+      }
+
+      .subscription-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .subscription-card {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+
+        .subscription-img {
+          margin: 0 auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🍱</span>
+          TiffinMate
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/dashboard">My Dashboard</a></li>
+          <li><a href="/search">Search Tiffin</a></li>
+          <li><a href="/tracking">Track Delivery</a></li>
+          <li>
+            <a href="#" onclick="logout()" class="btn btn-secondary btn-small"
+              >Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+      <div class="container">
+        <div class="user-info">
+          <div class="welcome-text">
+            <h1>Welcome back, <span id="userName">User</span>! 👋</h1>
+            <p>Manage your tiffin subscriptions and track deliveries</p>
+          </div>
+          <div>
+            <a href="/search" class="btn btn-secondary">Find New Tiffin</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="section">
+      <div class="container">
+        <div class="quick-stats">
+          <div class="stat-card">
+            <span class="stat-number" id="activeSubsCount">0</span>
+            <p class="stat-label">Active Subscriptions</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" id="totalDeliveries">0</span>
+            <p class="stat-label">Total Deliveries</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" id="totalSpent">₹0</span>
+            <p class="stat-label">Total Spent</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" id="deliveryRate">0%</span>
+            <p class="stat-label">Delivery Success Rate</p>
+          </div>
+        </div>
+
+        <!-- My Subscriptions -->
+        <h2 class="mb-3">My Subscriptions</h2>
+        <div id="subscriptionsList" class="subscriptions-list"></div>
+
+        <div
+          id="noSubscriptions"
+          style="display: none; text-align: center; padding: 3rem"
+        >
+          <div style="font-size: 4rem; margin-bottom: 1rem">🍱</div>
+          <h3>No Active Subscriptions</h3>
+          <p>Start your journey to homely meals today!</p>
+          <a href="/search" class="btn btn-primary btn-large mt-3"
+            >Find Tiffin Services</a
+          >
+        </div>
+
+        <div id="loadingSpinner" class="spinner"></div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>🍱 TiffinMate</h3>
+            <p>
+              Connecting students and professionals with homely, affordable
+              tiffin services.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="/">Home</a></li>
+              <li><a href="/search">Search Tiffin</a></li>
+              <li><a href="/tracking">Track Delivery</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 TiffinMate. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      let currentUser = null;
+
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+
+      function logout() {
+        localStorage.removeItem("userSession");
+        window.location.href = "/login";
+      }
+
+      function checkAuth() {
+        const session = localStorage.getItem("userSession");
+        if (!session) {
+          window.location.href = "/login";
+          return null;
+        }
+
+        const userData = JSON.parse(session);
+        if (userData.type !== "user") {
+          window.location.href = "/login";
+          return null;
+        }
+
+        return userData;
+      }
+
+      async function loadDashboard() {
+        currentUser = checkAuth();
+        if (!currentUser) return;
+
+        document.getElementById("userName").textContent = currentUser.name;
+
+        try {
+          // Load subscriptions
+          const response = await fetch(
+            `/api/subscriptions/user/${currentUser.userId}`
+          );
+          const subscriptions = await response.json();
+
+          document.getElementById("loadingSpinner").style.display = "none";
+
+          if (subscriptions.length === 0) {
+            document.getElementById("noSubscriptions").style.display = "block";
+            return;
+          }
+
+          // Calculate stats
+          let totalSpent = 0;
+          let totalDeliveries = 0;
+          let deliveredCount = 0;
+          let activeCount = 0;
+
+          subscriptions.forEach((sub) => {
+            if (sub.status === "active") activeCount++;
+            totalSpent += sub.total_amount;
+          });
+
+          // Load delivery stats for all subscriptions
+          for (const sub of subscriptions) {
+            const statsResponse = await fetch(
+              `/api/deliveries/stats/${sub.id}`
+            );
+            const stats = await statsResponse.json();
+            totalDeliveries += stats.total_deliveries;
+            deliveredCount += stats.delivered_count;
+          }
+
+          // Update stats
+          document.getElementById("activeSubsCount").textContent = activeCount;
+          document.getElementById("totalDeliveries").textContent =
+            totalDeliveries;
+          document.getElementById(
+            "totalSpent"
+          ).textContent = `₹${totalSpent.toLocaleString()}`;
+
+          const successRate =
+            totalDeliveries > 0
+              ? Math.round((deliveredCount / totalDeliveries) * 100)
+              : 0;
+          document.getElementById(
+            "deliveryRate"
+          ).textContent = `${successRate}%`;
+
+          // Display subscriptions
+          displaySubscriptions(subscriptions);
+        } catch (error) {
+          console.error("Error loading dashboard:", error);
+          document.getElementById("loadingSpinner").style.display = "none";
+        }
+      }
+
+      function displaySubscriptions(subscriptions) {
+        const container = document.getElementById("subscriptionsList");
+        container.innerHTML = "";
+
+        subscriptions.forEach((sub) => {
+          const card = document.createElement("div");
+          card.className = "subscription-card";
+
+          const statusBadge = getStatusBadge(sub.status);
+          const startDate = new Date(sub.start_date).toLocaleDateString();
+          const endDate = new Date(sub.end_date).toLocaleDateString();
+
+          card.innerHTML = `
+                    <img src="${
+                      sub.image_url ||
+                      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200"
+                    }" 
+                         alt="${sub.vendor_name}" class="subscription-img">
+                    <div>
+                        <div class="flex-between mb-2">
+                            <h3>${sub.vendor_name}</h3>
+                            ${statusBadge}
+                        </div>
+                        <p><strong>Plan:</strong> ${sub.plan_type}</p>
+                        <p><strong>Period:</strong> ${startDate} - ${endDate}</p>
+                        <p><strong>Amount:</strong> ₹${sub.total_amount}</p>
+                        <div class="mt-2">
+                            <span class="badge badge-info">${
+                              sub.food_type
+                            }</span>
+                        </div>
+                    </div>
+                    <div class="subscription-actions">
+                        <a href="/tracking?subscription=${
+                          sub.id
+                        }" class="btn btn-primary btn-small">View Calendar</a>
+                        <a href="/vendor?id=${
+                          sub.vendor_id
+                        }" class="btn btn-outline btn-small">View Vendor</a>
+                        ${
+                          sub.status === "active"
+                            ? `<button onclick="pauseSubscription(${sub.id})" class="btn btn-secondary btn-small">Pause</button>`
+                            : sub.status === "paused"
+                            ? `<button onclick="resumeSubscription(${sub.id})" class="btn btn-primary btn-small">Resume</button>`
+                            : ""
+                        }
+                    </div>
+                `;
+
+          container.appendChild(card);
+        });
+      }
+
+      function getStatusBadge(status) {
+        if (status === "active") {
+          return '<span class="badge badge-success">✓ Active</span>';
+        } else if (status === "paused") {
+          return '<span class="badge badge-warning">⏸ Paused</span>';
+        } else if (status === "cancelled") {
+          return '<span class="badge badge-danger">✕ Cancelled</span>';
+        } else {
+          return '<span class="badge badge-info">' + status + "</span>";
+        }
+      }
+
+      async function pauseSubscription(subId) {
+        if (!confirm("Are you sure you want to pause this subscription?"))
+          return;
+
+        try {
+          await fetch(`/api/subscriptions/${subId}/status`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "paused" }),
+          });
+
+          alert("Subscription paused successfully!");
+          loadDashboard();
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Failed to pause subscription");
+        }
+      }
+
+      async function resumeSubscription(subId) {
+        try {
+          await fetch(`/api/subscriptions/${subId}/status`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "active" }),
+          });
+
+          alert("Subscription resumed successfully!");
+          loadDashboard();
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Failed to resume subscription");
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", loadDashboard);
+    </script>
+  </body>
+</html>

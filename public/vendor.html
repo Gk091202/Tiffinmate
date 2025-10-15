@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vendor Profile - TiffinMate</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .vendor-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--dark-green)
+        );
+        color: white;
+        padding: 3rem 0;
+      }
+
+      .vendor-image-large {
+        width: 100%;
+        max-width: 500px;
+        height: 350px;
+        object-fit: cover;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-hover);
+      }
+
+      .plan-card {
+        border: 2px solid var(--primary-green);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        text-align: center;
+        transition: all 0.3s;
+      }
+
+      .plan-card:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-hover);
+      }
+
+      .plan-price {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin: 1rem 0;
+      }
+
+      .review-card {
+        background-color: var(--bg-light);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+      }
+
+      .subscribe-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .close-modal {
+        float: right;
+        font-size: 2rem;
+        cursor: pointer;
+        color: var(--text-light);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🍱</span>
+          TiffinMate
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/">Home</a></li>
+          <li><a href="/search">Search Tiffin</a></li>
+          <li id="authLinks">
+            <a href="/login" class="btn btn-secondary btn-small">Login</a>
+          </li>
+          <li>
+            <a href="/register-vendor" class="btn btn-primary btn-small"
+              >List Your Service</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Vendor Header -->
+    <div class="vendor-header">
+      <div class="container">
+        <a
+          href="/search"
+          style="
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1rem;
+          "
+          >← Back to Search</a
+        >
+        <h1 id="vendorName">Loading...</h1>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="spinner"></div>
+
+    <!-- Vendor Details -->
+    <section class="section" id="vendorDetails" style="display: none">
+      <div class="container">
+        <div class="grid grid-2 mb-4">
+          <div>
+            <img id="vendorImage" src="" alt="" class="vendor-image-large" />
+          </div>
+          <div>
+            <div class="flex gap-2 mb-3">
+              <span id="foodTypeBadge" class="badge badge-success"></span>
+              <span class="badge badge-info"
+                >🚚 Delivers within <span id="deliveryRadius"></span>km</span
+              >
+            </div>
+            <div class="rating mb-3" style="font-size: 1.2rem">
+              <span id="vendorStars"></span>
+              <span
+                class="rating-text"
+                style="font-size: 1rem"
+                id="vendorRating"
+              ></span>
+            </div>
+            <p
+              id="vendorDescription"
+              style="font-size: 1.1rem; line-height: 1.8"
+            ></p>
+            <div class="mt-3">
+              <p>
+                <strong>📍 Address:</strong> <span id="vendorAddress"></span>
+              </p>
+              <p><strong>📞 Phone:</strong> <span id="vendorPhone"></span></p>
+              <p><strong>📧 Email:</strong> <span id="vendorEmail"></span></p>
+            </div>
+            <div
+              class="mt-3 flex-between"
+              style="
+                background-color: var(--light-green);
+                padding: 1rem;
+                border-radius: 8px;
+              "
+            >
+              <span style="font-size: 1.2rem; font-weight: 600"
+                >😊 Happy Customers</span
+              >
+              <span
+                id="happyCustomers"
+                style="
+                  font-size: 1.5rem;
+                  font-weight: 700;
+                  color: var(--primary-green);
+                "
+              ></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscription Plans -->
+        <h2 class="text-center mt-4 mb-4">Choose Your Plan</h2>
+        <div class="grid grid-3 mb-4">
+          <div class="plan-card">
+            <h3>Daily Plan</h3>
+            <div class="plan-price">₹<span id="dailyPrice"></span></div>
+            <p>Perfect for trying out</p>
+            <ul
+              style="
+                text-align: left;
+                margin: 1rem 0;
+                list-style-position: inside;
+              "
+            >
+              <li>✓ One meal per day</li>
+              <li>✓ Cancel anytime</li>
+              <li>✓ Fresh food daily</li>
+            </ul>
+            <button
+              class="btn btn-primary btn-block"
+              onclick="openSubscribeModal('Daily')"
+            >
+              Subscribe Daily
+            </button>
+          </div>
+          <div
+            class="plan-card"
+            style="border-color: var(--accent-orange); border-width: 3px"
+          >
+            <span
+              class="badge badge-warning"
+              style="
+                position: absolute;
+                top: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+              "
+              >POPULAR</span
+            >
+            <h3>Weekly Plan</h3>
+            <div class="plan-price">₹<span id="weeklyPrice"></span></div>
+            <p>Best for students</p>
+            <ul
+              style="
+                text-align: left;
+                margin: 1rem 0;
+                list-style-position: inside;
+              "
+            >
+              <li>✓ 7 meals included</li>
+              <li>✓ Save ₹<span id="weeklySavings"></span></li>
+              <li>✓ Flexible delivery</li>
+            </ul>
+            <button
+              class="btn btn-primary btn-block"
+              onclick="openSubscribeModal('Weekly')"
+            >
+              Subscribe Weekly
+            </button>
+          </div>
+          <div class="plan-card">
+            <h3>Monthly Plan</h3>
+            <div class="plan-price">₹<span id="monthlyPrice"></span></div>
+            <p>Maximum savings</p>
+            <ul
+              style="
+                text-align: left;
+                margin: 1rem 0;
+                list-style-position: inside;
+              "
+            >
+              <li>✓ 30 meals included</li>
+              <li>✓ Save ₹<span id="monthlySavings"></span></li>
+              <li>✓ Priority support</li>
+            </ul>
+            <button
+              class="btn btn-primary btn-block"
+              onclick="openSubscribeModal('Monthly')"
+            >
+              Subscribe Monthly
+            </button>
+          </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <h2 class="mt-4 mb-3">Customer Reviews</h2>
+        <div id="reviewsContainer"></div>
+        <div
+          id="noReviews"
+          style="
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+          "
+        >
+          <p>No reviews yet. Be the first to review!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subscribe Modal -->
+    <div id="subscribeModal" class="subscribe-modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeSubscribeModal()">&times;</span>
+        <h2>Subscribe to <span id="modalVendorName"></span></h2>
+        <form id="subscribeForm" onsubmit="handleSubscribe(event)">
+          <div class="form-group">
+            <label class="form-label">Plan Type</label>
+            <input type="text" id="modalPlanType" class="form-input" readonly />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Start Date *</label>
+            <input type="date" id="startDate" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Amount</label>
+            <input
+              type="text"
+              id="totalAmount"
+              class="form-input"
+              readonly
+              style="
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--primary-green);
+              "
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-large">
+            Confirm Subscription
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>🍱 TiffinMate</h3>
+            <p>
+              Connecting students and professionals with homely, affordable
+              tiffin services.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="/">Home</a></li>
+              <li><a href="/search">Search Tiffin</a></li>
+              <li><a href="/tracking">Track Delivery</a></li>
+              <li><a href="/register-vendor">List Your Service</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>For Vendors</h3>
+            <ul class="footer-links">
+              <li><a href="/register-vendor">Register Your Service</a></li>
+              <li><a href="#">Vendor Guidelines</a></li>
+              <li><a href="#">Pricing Plans</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Support</h3>
+            <ul class="footer-links">
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 TiffinMate. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      let currentVendor = null;
+      let selectedPlan = null;
+
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+
+      window.addEventListener("DOMContentLoaded", async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const vendorId = urlParams.get("id");
+
+        if (!vendorId) {
+          window.location.href = "/search";
+          return;
+        }
+
+        await loadVendorDetails(vendorId);
+        await loadVendorReviews(vendorId);
+
+        // Set minimum date for subscription to today
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("startDate").min = today;
+        document.getElementById("startDate").value = today;
+      });
+
+      async function loadVendorDetails(vendorId) {
+        try {
+          const response = await fetch(`/api/vendors/${vendorId}`);
+          const vendor = await response.json();
+          currentVendor = vendor;
+
+          // Update page content
+          document.getElementById("vendorName").textContent = vendor.name;
+          document.getElementById("vendorImage").src =
+            vendor.image_url ||
+            "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500";
+          document.getElementById("vendorImage").alt = vendor.name;
+          document.getElementById("foodTypeBadge").textContent =
+            vendor.food_type;
+          document.getElementById("deliveryRadius").textContent =
+            vendor.delivery_radius;
+          document.getElementById("vendorStars").innerHTML = getStarRating(
+            vendor.rating
+          );
+          document.getElementById(
+            "vendorRating"
+          ).textContent = `${vendor.rating.toFixed(1)} (${
+            vendor.total_ratings
+          } reviews)`;
+          document.getElementById("vendorDescription").textContent =
+            vendor.description;
+          document.getElementById(
+            "vendorAddress"
+          ).textContent = `${vendor.address}, ${vendor.locality}, ${vendor.city}`;
+          document.getElementById("vendorPhone").textContent = vendor.phone;
+          document.getElementById("vendorEmail").textContent = vendor.email;
+          document.getElementById("happyCustomers").textContent =
+            vendor.happy_customers;
+
+          // Pricing
+          document.getElementById("dailyPrice").textContent =
+            vendor.daily_price;
+          document.getElementById("weeklyPrice").textContent =
+            vendor.weekly_price;
+          document.getElementById("monthlyPrice").textContent =
+            vendor.monthly_price;
+
+          // Calculate savings
+          const weeklySavings = vendor.daily_price * 7 - vendor.weekly_price;
+          const monthlySavings = vendor.daily_price * 30 - vendor.monthly_price;
+          document.getElementById("weeklySavings").textContent = weeklySavings;
+          document.getElementById("monthlySavings").textContent =
+            monthlySavings;
+
+          // Show content
+          document.getElementById("loadingSpinner").style.display = "none";
+          document.getElementById("vendorDetails").style.display = "block";
+        } catch (error) {
+          console.error("Error loading vendor:", error);
+          alert("Failed to load vendor details");
+        }
+      }
+
+      async function loadVendorReviews(vendorId) {
+        try {
+          const response = await fetch(`/api/reviews/vendor/${vendorId}`);
+          const reviews = await response.json();
+
+          const container = document.getElementById("reviewsContainer");
+
+          if (reviews.length === 0) {
+            document.getElementById("noReviews").style.display = "block";
+            return;
+          }
+
+          reviews.forEach((review) => {
+            const reviewCard = document.createElement("div");
+            reviewCard.className = "review-card";
+            reviewCard.innerHTML = `
+                        <div class="flex-between mb-2">
+                            <strong>${review.user_name}</strong>
+                            <div class="rating">
+                                ${getStarRating(review.rating)}
+                            </div>
+                        </div>
+                        <p>${review.comment}</p>
+                        <small style="color: var(--text-light);">${new Date(
+                          review.created_at
+                        ).toLocaleDateString()}</small>
+                    `;
+            container.appendChild(reviewCard);
+          });
+        } catch (error) {
+          console.error("Error loading reviews:", error);
+        }
+      }
+
+      function getStarRating(rating) {
+        const fullStars = Math.floor(rating);
+        let stars = "";
+        for (let i = 0; i < fullStars; i++) {
+          stars += "⭐";
+        }
+        return stars;
+      }
+
+      function openSubscribeModal(planType) {
+        selectedPlan = planType;
+        document.getElementById("subscribeModal").style.display = "flex";
+        document.getElementById("modalVendorName").textContent =
+          currentVendor.name;
+        document.getElementById("modalPlanType").value = planType;
+
+        // Set price based on plan
+        let price = 0;
+        if (planType === "Daily") price = currentVendor.daily_price;
+        else if (planType === "Weekly") price = currentVendor.weekly_price;
+        else if (planType === "Monthly") price = currentVendor.monthly_price;
+
+        document.getElementById("totalAmount").value = `₹${price}`;
+      }
+
+      function closeSubscribeModal() {
+        document.getElementById("subscribeModal").style.display = "none";
+        document.getElementById("subscribeForm").reset();
+      }
+
+      async function handleSubscribe(event) {
+        event.preventDefault();
+
+        // Check if user is logged in
+        const session = JSON.parse(
+          localStorage.getItem("userSession") || "null"
+        );
+        if (!session || session.type !== "user") {
+          alert("Please login to subscribe to a tiffin service");
+          window.location.href = "/login";
+          return;
+        }
+
+        const startDate = document.getElementById("startDate").value;
+
+        // Calculate end date based on plan
+        const start = new Date(startDate);
+        let end = new Date(start);
+
+        if (selectedPlan === "Daily") {
+          end.setDate(end.getDate() + 1);
+        } else if (selectedPlan === "Weekly") {
+          end.setDate(end.getDate() + 7);
+        } else if (selectedPlan === "Monthly") {
+          end.setDate(end.getDate() + 30);
+        }
+
+        const endDate = end.toISOString().split("T")[0];
+
+        // Get price
+        let price = 0;
+        if (selectedPlan === "Daily") price = currentVendor.daily_price;
+        else if (selectedPlan === "Weekly") price = currentVendor.weekly_price;
+        else if (selectedPlan === "Monthly")
+          price = currentVendor.monthly_price;
+
+        try {
+          // Create subscription using logged-in user
+          const subResponse = await fetch("/api/subscriptions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: session.userId,
+              vendor_id: currentVendor.id,
+              plan_type: selectedPlan,
+              start_date: startDate,
+              end_date: endDate,
+              total_amount: price,
+            }),
+          });
+
+          const subData = await subResponse.json();
+
+          alert(
+            `Subscription successful! Your subscription ID is ${subData.id}. You can track your deliveries on the tracking page.`
+          );
+          closeSubscribeModal();
+
+          // Redirect to tracking page
+          setTimeout(() => {
+            window.location.href = `/tracking?subscription=${subData.id}`;
+          }, 2000);
+        } catch (error) {
+          console.error("Error creating subscription:", error);
+          alert("Failed to create subscription. Please try again.");
+        }
+      }
+
+      // Update navigation based on session
+      function updateNavigation() {
+        const session = JSON.parse(
+          localStorage.getItem("userSession") || "null"
+        );
+        const authLinks = document.getElementById("authLinks");
+
+        if (session) {
+          if (session.type === "user") {
+            authLinks.innerHTML = `
+              <a href="/dashboard">Dashboard</a>
+              <a href="/tracking">Track</a>
+              <a href="#" onclick="logout()" class="btn btn-secondary btn-small">Logout</a>
+            `;
+          } else if (session.type === "vendor") {
+            authLinks.innerHTML = `
+              <a href="/vendor-dashboard">Dashboard</a>
+              <a href="#" onclick="logout()" class="btn btn-secondary btn-small">Logout</a>
+            `;
+          }
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem("userSession");
+        window.location.href = "/";
+      }
+
+      // Run on page load
+      updateNavigation();
+    </script>
+  </body>
+</html>

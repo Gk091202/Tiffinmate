@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register Your Tiffin Service - TiffinMate</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .registration-form {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 3rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid var(--bg-light);
+      }
+
+      .form-section:last-child {
+        border-bottom: none;
+      }
+
+      .form-section h3 {
+        color: var(--primary-green);
+        margin-bottom: 1.5rem;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .success-message {
+        display: none;
+        background-color: var(--light-green);
+        border: 2px solid var(--primary-green);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .registration-form {
+          padding: 2rem 1rem;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">
+          <span class="logo-icon">🍱</span>
+          TiffinMate
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/">Home</a></li>
+          <li><a href="/search">Search Tiffin</a></li>
+          <li id="authLinks">
+            <a href="/login" class="btn btn-secondary btn-small">Login</a>
+          </li>
+          <li>
+            <a href="/register-vendor" class="btn btn-primary btn-small"
+              >List Your Service</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <section
+      style="
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--dark-green)
+        );
+        color: white;
+        padding: 3rem 0;
+        text-align: center;
+      "
+    >
+      <div class="container">
+        <h1>🍽️ List Your Tiffin Service</h1>
+        <p>
+          Join TiffinMate and reach thousands of hungry students and
+          professionals
+        </p>
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="section" style="background-color: var(--bg-light)">
+      <div class="container">
+        <h2 class="text-center mb-4">Why Partner with TiffinMate?</h2>
+        <div class="grid grid-3">
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">📈</div>
+            <h4>Grow Your Business</h4>
+            <p>
+              Reach more customers in your area and increase your daily orders.
+            </p>
+          </div>
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">💼</div>
+            <h4>Easy Management</h4>
+            <p>
+              Simple dashboard to manage subscriptions and track deliveries.
+            </p>
+          </div>
+          <div class="card text-center">
+            <div style="font-size: 3rem; margin-bottom: 1rem">💰</div>
+            <h4>Low Commission</h4>
+            <p>Competitive rates with transparent pricing. No hidden fees.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registration Form -->
+    <section class="section">
+      <div class="container">
+        <div id="successMessage" class="success-message">
+          <div style="font-size: 4rem; margin-bottom: 1rem">🎉</div>
+          <h2>Registration Successful!</h2>
+          <p>
+            Thank you for registering with TiffinMate. Our team will review your
+            application and contact you within 24-48 hours.
+          </p>
+          <p>
+            <strong>Your Vendor ID: <span id="vendorId"></span></strong>
+          </p>
+          <a href="/" class="btn btn-primary btn-large mt-3">Back to Home</a>
+        </div>
+
+        <div id="registrationForm" class="registration-form">
+          <h2 class="text-center mb-4">Vendor Registration Form</h2>
+
+          <form onsubmit="handleRegistration(event)">
+            <!-- Basic Information -->
+            <div class="form-section">
+              <h3>📋 Basic Information</h3>
+              <div class="form-group">
+                <label class="form-label">Business Name *</label>
+                <input
+                  type="text"
+                  id="businessName"
+                  class="form-input"
+                  required
+                  placeholder="e.g., Maa Ke Haath Ka Khana"
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Email Address *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-input"
+                    required
+                    placeholder="your@email.com"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    class="form-input"
+                    required
+                    placeholder="9876543210"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Business Description *</label>
+                <textarea
+                  id="description"
+                  class="form-textarea"
+                  required
+                  placeholder="Tell customers about your tiffin service, specialties, and what makes you unique..."
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Location Details -->
+            <div class="form-section">
+              <h3>📍 Location Details</h3>
+              <div class="form-group">
+                <label class="form-label">Full Address *</label>
+                <input
+                  type="text"
+                  id="address"
+                  class="form-input"
+                  required
+                  placeholder="Shop/House No., Street Name"
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">City *</label>
+                  <input
+                    type="text"
+                    id="city"
+                    class="form-input"
+                    required
+                    placeholder="e.g., Pune, Bangalore"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Locality/Area *</label>
+                  <input
+                    type="text"
+                    id="locality"
+                    class="form-input"
+                    required
+                    placeholder="e.g., Kothrud, Koramangala"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Delivery Radius (in km) *</label>
+                <input
+                  type="number"
+                  id="deliveryRadius"
+                  class="form-input"
+                  required
+                  min="1"
+                  max="20"
+                  value="5"
+                  placeholder="5"
+                />
+                <small style="color: var(--text-light)"
+                  >How far can you deliver from your location?</small
+                >
+              </div>
+            </div>
+
+            <!-- Food Details -->
+            <div class="form-section">
+              <h3>🍽️ Food & Menu Details</h3>
+              <div class="form-group">
+                <label class="form-label">Food Type *</label>
+                <select id="foodType" class="form-select" required>
+                  <option value="">-- Select Food Type --</option>
+                  <option value="Veg">Vegetarian Only</option>
+                  <option value="Non-Veg">Non-Vegetarian Only</option>
+                  <option value="Jain">Jain Food</option>
+                  <option value="Mixed">Both Veg & Non-Veg</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Food Image URL (Optional)</label>
+                <input
+                  type="url"
+                  id="imageUrl"
+                  class="form-input"
+                  placeholder="https://example.com/food-image.jpg"
+                />
+                <small style="color: var(--text-light)"
+                  >Add a link to an appetizing photo of your food</small
+                >
+              </div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="form-section">
+              <h3>💰 Pricing Plans</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Daily Price (₹) *</label>
+                  <input
+                    type="number"
+                    id="dailyPrice"
+                    class="form-input"
+                    required
+                    min="50"
+                    max="500"
+                    placeholder="120"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Weekly Price (₹) *</label>
+                  <input
+                    type="number"
+                    id="weeklyPrice"
+                    class="form-input"
+                    required
+                    min="300"
+                    max="3000"
+                    placeholder="750"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Monthly Price (₹) *</label>
+                <input
+                  type="number"
+                  id="monthlyPrice"
+                  class="form-input"
+                  required
+                  min="1000"
+                  max="10000"
+                  placeholder="2800"
+                />
+              </div>
+              <div
+                style="
+                  background-color: var(--light-green);
+                  padding: 1rem;
+                  border-radius: 8px;
+                  margin-top: 1rem;
+                "
+              >
+                <p style="margin: 0">
+                  <strong>💡 Pricing Tip:</strong> Weekly price should be around
+                  6x daily price, and monthly around 23-25x daily price to
+                  attract subscribers!
+                </p>
+              </div>
+            </div>
+
+            <!-- Terms -->
+            <div class="form-section">
+              <div class="form-group">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    cursor: pointer;
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    required
+                    style="width: 20px; height: 20px"
+                  />
+                  <span
+                    >I agree to TiffinMate's Terms of Service and understand the
+                    commission structure *</span
+                  >
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary btn-large btn-block">
+              Register My Tiffin Service
+            </button>
+            <p class="text-center mt-3" style="color: var(--text-light)">
+              Already registered?
+              <a href="#" style="color: var(--primary-green)"
+                >Login to Dashboard</a
+              >
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>🍱 TiffinMate</h3>
+            <p>
+              Connecting students and professionals with homely, affordable
+              tiffin services.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="/">Home</a></li>
+              <li><a href="/search">Search Tiffin</a></li>
+              <li><a href="/tracking">Track Delivery</a></li>
+              <li><a href="/register-vendor">List Your Service</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>For Vendors</h3>
+            <ul class="footer-links">
+              <li><a href="/register-vendor">Register Your Service</a></li>
+              <li><a href="#">Vendor Guidelines</a></li>
+              <li><a href="#">Pricing Plans</a></li>
+              <li><a href="#">Success Stories</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Support</h3>
+            <ul class="footer-links">
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025 TiffinMate. All rights reserved. Made with ❤️ for homely
+            food lovers.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+
+      async function handleRegistration(event) {
+        event.preventDefault();
+
+        const vendorData = {
+          name: document.getElementById("businessName").value,
+          email: document.getElementById("email").value,
+          phone: document.getElementById("phone").value,
+          description: document.getElementById("description").value,
+          address: document.getElementById("address").value,
+          city: document.getElementById("city").value,
+          locality: document.getElementById("locality").value,
+          food_type: document.getElementById("foodType").value,
+          daily_price: parseFloat(document.getElementById("dailyPrice").value),
+          weekly_price: parseFloat(
+            document.getElementById("weeklyPrice").value
+          ),
+          monthly_price: parseFloat(
+            document.getElementById("monthlyPrice").value
+          ),
+          delivery_radius: parseInt(
+            document.getElementById("deliveryRadius").value
+          ),
+          image_url: document.getElementById("imageUrl").value || null,
+        };
+
+        try {
+          const response = await fetch("/api/vendors", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(vendorData),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            // Show success message
+            document.getElementById("vendorId").textContent = result.id;
+            document.getElementById("registrationForm").style.display = "none";
+            document.getElementById("successMessage").style.display = "block";
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          } else {
+            alert("Registration failed: " + result.error);
+          }
+        } catch (error) {
+          console.error("Error registering vendor:", error);
+          alert("An error occurred during registration. Please try again.");
+        }
+      }
+
+      // Auto-calculate suggested weekly and monthly prices
+      document
+        .getElementById("dailyPrice")
+        .addEventListener("input", function () {
+          const daily = parseFloat(this.value);
+          if (daily) {
+            document.getElementById("weeklyPrice").value = Math.round(
+              daily * 6
+            );
+            document.getElementById("monthlyPrice").value = Math.round(
+              daily * 24
+            );
+          }
+        });
+
+      // Update navigation based on session
+      function updateNavigation() {
+        const session = JSON.parse(
+          localStorage.getItem("userSession") || "null"
+        );
+        const authLinks = document.getElementById("authLinks");
+
+        if (session) {
+          if (session.type === "user") {
+            authLinks.innerHTML = `
+              <a href="/dashboard">Dashboard</a>
+              <a href="/tracking">Track</a>
+              <a href="#" onclick="logout()" class="btn btn-secondary btn-small">Logout</a>
+            `;
+          } else if (session.type === "vendor") {
+            authLinks.innerHTML = `
+              <a href="/vendor-dashboard">Dashboard</a>
+              <a href="#" onclick="logout()" class="btn btn-secondary btn-small">Logout</a>
+            `;
+          }
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem("userSession");
+        window.location.href = "/";
+      }
+
+      // Run on page load
+      updateNavigation();
+    </script>
+  </body>
+</html>
