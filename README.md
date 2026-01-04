@@ -16,7 +16,7 @@ TiffinMate is a complete web platform connecting students, working professionals
 
 - 📝 **Easy Registration** - Simple form to list your tiffin service
 - 📊 **Business Dashboard** - Manage subscriptions and deliveries
-- 🎯 **Reach More Customers** - Get discovered by students and professionals nearby
+- 🎯 **Reach More Customers** - Get discovered by students and professionals near you
 
 ## 🛠️ Technology Stack
 
