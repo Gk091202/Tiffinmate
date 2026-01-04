@@ -236,4 +236,4 @@ For support, email support@tiffinmate.com or create an issue in the repository.
 
 **Made with ❤️ for homely food lovers**
 
-Happy coding! 🚀🍱
+Happy coding & Learning! 🚀🍱
